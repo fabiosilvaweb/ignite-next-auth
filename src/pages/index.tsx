@@ -5,8 +5,8 @@ import { AuthContext } from '../contexts/AuthContext';
 const Home: NextPage = () => {
   const { signIn } = useContext(AuthContext)
 
-  const [email, setEmail] = useState<string>('');
-  const [password, setPassword] = useState<string>('');
+  const [email, setEmail] = useState<string>('jonhdoe@gmail.com');
+  const [password, setPassword] = useState<string>('123456');
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()

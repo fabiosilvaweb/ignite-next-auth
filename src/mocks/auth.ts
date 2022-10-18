@@ -5,7 +5,7 @@ type SignInCredentials = {
   password: string
 }
 
-const signInMock = async(credentials: SignInCredentials) => {
+const signInMockApi = async(credentials: SignInCredentials) => {
   const payload = sign({}, 'auth.secret',{
     expiresIn: '1d'
   })
@@ -18,6 +18,15 @@ const signInMock = async(credentials: SignInCredentials) => {
   }
 }
 
+const getUserDataMockApi = () => {
+  return {
+    email: 'johndoe@email.com',
+    permissions: ['users.list', 'users.create', 'metrics.list'],
+    roles: ['administrador'],
+  }
+}
+
 export {
-  signInMock
+  signInMockApi,
+  getUserDataMockApi
 }

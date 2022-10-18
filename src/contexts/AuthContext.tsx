@@ -1,7 +1,8 @@
 import Router from "next/router";
-import { createContext, ReactNode, useState } from "react";
-import { signInMock } from "../mocks/auth";
-import { setCookie } from 'nookies';
+import { createContext, ReactNode, useState, useEffect } from "react";
+import { getUserDataMockApi, signInMockApi } from "../mocks/auth";
+import { setCookie, parseCookies } from 'nookies';
+import {api} from '../services/api'
 
 type User = {
   email: string
@@ -30,8 +31,22 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User>()
   const isAuthenticated = !!user
 
+  useEffect(() => {
+    const { 'ignite-auth.token': token } = parseCookies()
+
+    if (token) {
+      const response = getUserDataMockApi()
+
+      setUser({
+        email: response.email,
+        permissions: response.permissions,
+        roles: response.roles
+      })
+    }
+  }, [])
+
   const signIn = async (credentials: SignInCredentials) => {
-    const response = await signInMock(credentials)
+    const response = await signInMockApi(credentials)
 
     const nookieConfig = {
       maxAge: 60 * 60 * 24 * 30, // 30 days
@@ -46,6 +61,8 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       permissions: response.permissions,
       roles: response.roles
     })
+
+    api.defaults.headers['Authorization'] = `Bearer ${response.token}`;
 
     Router.push('/dashboard')
   }

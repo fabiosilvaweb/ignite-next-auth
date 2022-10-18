@@ -1,12 +1,8 @@
 import axios, { AxiosError } from 'axios';
 import { parseCookies, setCookie } from 'nookies';
+import { nookieConfig } from '../config/nookie';
 
 let cookies = parseCookies()
-
-const nookieConfig = {
-  maxAge: 60 * 60 * 24 * 30, // 30 days
-  path: '/'
-}
 
 export const api = axios.create({
   baseURL: 'http://localhost:3001',

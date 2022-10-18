@@ -3,6 +3,7 @@ import { createContext, ReactNode, useState, useEffect } from "react";
 import { getUserDataMockApi, signInMockApi } from "../mocks/auth";
 import { setCookie, parseCookies } from 'nookies';
 import {api} from '../services/api'
+import { nookieConfig } from "../config/nookie";
 
 type User = {
   email: string
@@ -47,11 +48,6 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const signIn = async (credentials: SignInCredentials) => {
     const response = await signInMockApi(credentials)
-
-    const nookieConfig = {
-      maxAge: 60 * 60 * 24 * 30, // 30 days
-      path: '/'
-    }
 
     setCookie(undefined, 'ignite-auth.token', response.token, nookieConfig)
     setCookie(undefined, 'ignite-auth.refreshToken', response.refreshToken, nookieConfig)

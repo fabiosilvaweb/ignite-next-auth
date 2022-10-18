@@ -1,8 +1,8 @@
 import Router from "next/router";
 import { createContext, ReactNode, useState, useEffect } from "react";
 import { getUserDataMockApi, signInMockApi } from "../mocks/auth";
-import { setCookie, parseCookies } from 'nookies';
-import {api} from '../services/api'
+import { setCookie, parseCookies, destroyCookie } from 'nookies';
+import { api } from '../services/apiClient'
 import { nookieConfig } from "../config/nookie";
 
 type User = {
@@ -19,6 +19,7 @@ type SignInCredentials = {
 type AuthContextData = {
   user?: User;
   signIn(credentials: SignInCredentials): Promise<void>;
+  signOut: () => void
   isAuthenticated: boolean;
 }
 
@@ -28,9 +29,16 @@ type AuthProviderProps = {
 
 const AuthContext = createContext({} as AuthContextData);
 
+export const signOut = () => {
+  destroyCookie(undefined, 'ignite-auth.token')
+  destroyCookie(undefined, 'ignite-auth.refreshToken')
+  Router.push('/')
+}
+
 const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User>()
   const isAuthenticated = !!user
+
 
   useEffect(() => {
     const { 'ignite-auth.token': token } = parseCookies()
@@ -64,7 +72,7 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   }
 
   return (
-  <AuthContext.Provider value={{ user, signIn, isAuthenticated }}>
+  <AuthContext.Provider value={{ user, signIn, isAuthenticated, signOut }}>
     {children}
   </AuthContext.Provider>
   )
